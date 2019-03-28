@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        #slider {
+            width: 750px;
+            height: 320px;
+            padding: 10px;
+            margin: 100px auto;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+
+        #top {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #ul {
+            width: calc(750 * 6px);
+            height: 100%;
+            position: absolute;
+        }
+
+        img {
+            vertical-align: top;
+        }
+
+        #ul li {
+            float: left;
+            width: 750px;
+            height: 320px;
+        }
+
+        ol {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            margin-right: 5px;
+        }
+
+        ol li {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #ccc;
+            float: left;
+        }
+
+        .current {
+            background-color: orangered;
+        }
+    </style>
+</head>
+<body>
+<div id="slider">
+    <div id="top">
+        <ul id="ul">
+            <li><img src="imgs/pic01.jpg" alt=""></li>
+            <li><img src="imgs/pic02.jpg" alt=""></li>
+            <li><img src="imgs/pic03.jpg" alt=""></li>
+            <li><img src="imgs/pic04.jpg" alt=""></li>
+            <li><img src="imgs/pic05.jpg" alt=""></li>
+        </ul>
+    </div>
+    <div id="bottom">
+        <ol id="ol">
+        </ol>
+    </div>
+</div>
+<script src="js/myFunc.js"></script>
+<script>
+    (
+        function () {
+            var sliceIndex = 0;
+            var cIndex =0;
+            var lis = $("ul").children;
+
+            $("ul").appendChild(lis[0].cloneNode(true));
+            //动态创建ol li
+            for (var i = 0; i < lis.length - 1; i++) {
+                var oli = document.createElement("li");
+                $("ol").appendChild(oli)
+            }
+            var olis = $("ol").children;
+            olis[0].className = "current";
+            for (var i = 0; i < olis.length; i++) {
+                (
+                    function (i) {
+                        olis[i].onmouseover = function () {
+                            for (var j = 0; j < olis.length; j++) {
+                                olis[j].className = ""
+                            }
+                            this.className = "current";
+                            constant($("ul"),-(i * 750),100)
+                            sliceIndex=cIndex = i;
+                        }
+                    })(i)
+            }
+
+
+            //自动轮播
+             var timer = setInterval(autoPlay,1000);
+            $("slider").onmouseover = function(){
+                clearInterval(timer)
+            };
+            $("slider").onmouseout = function(){
+                timer = setInterval(autoPlay,1000)
+            };
+            function autoPlay(){
+                sliceIndex ++;
+                if (sliceIndex >lis.length-1){
+                    $("ul").style.left = 0;
+                    sliceIndex = 1;
+                }
+                constant($("ul"),-(750*sliceIndex),100);
+                cIndex ++;
+                if (cIndex > olis .length -1){
+                    cIndex = 0
+                }
+                for(var i = 0;i<olis.length;i++){
+                    olis[i].className = ""
+                }
+                olis[cIndex].className = "current"
+            }
+            function $(id) {
+                return document.getElementById(id)
+            }
+        }
+    )()
+</script>
+</body>
+</html>
